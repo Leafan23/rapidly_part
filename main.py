@@ -28,5 +28,6 @@ if __name__ == "__main__":
     dimension_to_string(gabarit_x)
     app = GUI.App(gabarit)
     app.mainloop()
+    print('End')
 
 
