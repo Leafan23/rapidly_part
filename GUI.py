@@ -1,0 +1,164 @@
+import customtkinter
+
+class App(customtkinter.CTk):  # Main window of app
+    def __init__(self, gabarit):
+        super().__init__()
+
+        self.gabarit = gabarit
+        self.title("my app")
+        self.geometry("750x700")
+        self.row = 6  # row for new dimension
+        self.my_list = []  # list for field
+        self.i = 0  # count for list
+
+        self.lable_0 = customtkinter.CTkLabel(self, text=" ", fg_color="transparent")
+        self.lable_0.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="w")
+
+        self.lable_1 = customtkinter.CTkLabel(self, text=" ", fg_color="transparent")
+        self.lable_1.grid(row=1, column=1, padx=20, pady=(0, 20), sticky="w")
+
+        self.checkbox_1 = customtkinter.CTkCheckBox(self, text="Показывать квалитет")
+        self.checkbox_1.grid(row=1, column=3, padx=20, pady=(0, 20), sticky="w")
+
+        self.checkbox_2 = customtkinter.CTkCheckBox(self, text="Показывать допуск")
+        self.checkbox_2.grid(row=1, column=4, padx=20, pady=(0, 20), sticky="we")
+
+        self.field_add = customtkinter.CTkButton(self, text="Добавить размер", command=self.button_event)
+        self.field_add.grid(row=self.row, column=0, padx=20, pady=20, sticky="w")
+
+        self.field_delete = customtkinter.CTkButton(self, text="Убрать размер", command=self.button_event_delete,
+                                                    state="disabled")
+        self.field_delete.grid(row=self.row, column=1, padx=20, pady=20, sticky="we")
+
+        self.lable_2 = customtkinter.CTkLabel(self, text=" ", fg_color="transparent")
+        self.lable_2.grid(row=self.row + 3, column=0, padx=20, pady=(0, 20), sticky="w")
+
+        self.button_send = customtkinter.CTkButton(self, text="Чертежная деталь", command=self.undo_button)
+        self.button_send.grid(row=self.row + 4, column=3, padx=20, pady=20, sticky="w", columnspan=1)
+
+        self.button_send_bch = customtkinter.CTkButton(self, text="БЧ деталь", command=self.do_button,
+                                                       fg_color="#ffa500", text_color="black")
+        self.button_send_bch.grid(row=self.row + 4, column=4, padx=20, pady=20, sticky="w", columnspan=1)
+
+        # Добавление строки с размерами
+        self.my_list.append(DimensionField(master=self, id=self.i, gabarit=self.gabarit, target=self.my_list))
+        self.my_list[self.i].grid(row=self.row, column=0, padx=20, pady=20, sticky="we", columnspan=5)
+        self.i += 1
+        self.row += 1
+        self.field_add.grid(row=self.row + 1)
+        self.field_delete.grid(row=self.row + 1)
+        print("Длина строки: ", self.row)  # delete after
+        self.field_delete.configure(state="normal")
+        if self.row > 8:
+            self.field_add.configure(state="disabled")
+
+    def do_button(self):  # Кнопка для БЧ детали
+        print(self.my_list[0].entry_2.get())
+
+    def undo_button(self):  # Кнопка для чертежной детали
+        pass
+
+    def button_event(self):  # Кнопка для добавления строки с размерами
+        self.my_list.append(DimensionField(master=self, id=self.i, gabarit=self.gabarit, target=self.my_list))
+        self.my_list[self.i].grid(row=self.row, column=0, padx=20, pady=20, sticky="we", columnspan=5)
+        self.i += 1
+        self.row += 1
+        self.field_add.grid(row=self.row + 1)
+        self.field_delete.grid(row=self.row + 1)
+        print("Длина строки: ", self.row)  # delete after
+        self.field_delete.configure(state="normal")
+        if self.row > 8:
+            self.field_add.configure(state="disabled")
+
+    def button_event_delete(self):  # Кнопка для удаления строки с размерами
+        self.my_list[self.i - 1].destroy()
+        self.my_list.pop(self.i - 1)
+        self.i -= 1
+        self.row -= 1
+        self.field_add.grid(row=self.row + 1)
+        self.field_delete.grid(row=self.row + 1)
+        print("Длина строки: ", self.row)
+        if self.row < 7:
+            self.field_delete.configure(state="disabled")
+        self.field_add.configure(state="normal")
+
+
+class DimensionField(customtkinter.CTkFrame):  # Рамка ополнительных полей с размерами
+    def __init__(self, master, id, gabarit, target, **kwargs):
+        super().__init__(master, **kwargs)
+
+        self.target = target
+        self.id = id
+        self.tolerance = None
+
+        self.entry = customtkinter.CTkEntry(self, placeholder_text="L = ")
+        self.entry.grid(row=1, column=0, padx=20, sticky="w", columnspan=1)
+
+        self.entry_2 = customtkinter.CTkComboBox(self, values=gabarit)
+        self.entry_2.grid(row=1, column=1, padx=20, sticky="w", columnspan=1)
+
+        self.button = customtkinter.CTkButton(self, text="Квалитет", command=self.button_callback)
+        self.button.grid(row=1, column=2, padx=20, pady=20, sticky="w", columnspan=1)
+
+        self.entry_3 = customtkinter.CTkEntry(self, placeholder_text="Верхний допуск")
+        self.entry_3.grid(row=0, column=3, padx=20, sticky="w", columnspan=1)
+
+        self.entry_4 = customtkinter.CTkEntry(self, placeholder_text="Нижний допуск")
+        self.entry_4.grid(row=2, column=3, padx=20, sticky="w", columnspan=1)
+
+    def button_callback(self):
+        self.tolerance = Tolerance(self.id, self.target)  # create window if its None or destroyed
+
+        print("button pressed")
+
+
+class Tolerance(customtkinter.CTkToplevel):  # Класс окна квалитета
+    def __init__(self, id, target):
+        super().__init__()
+        self.list = target
+        self.title("Tolerance")
+        self.geometry("+400+400")
+        self.id = id  # id of field
+        self.attributes("-topmost", True)
+        self.row = 0
+        #  self.string_number = 1
+        self.toletance = ["n", "m", "k", "js", "h", "g", "f", "e", "d", "c"]
+        self.x = ["n", "m", "k", "js", "h", "g", "f", "e", "d", "c"]
+
+
+        self.tabview = customtkinter.CTkTabview(master=self)
+        self.tabview.add("Вал (h14)")
+        self.tabview.add("Отверстие (H14)")
+        self.tabview.grid(row=0, column=0, padx=0, pady=(0, 0), sticky="we")
+        self.button, self.button1 = [], []
+
+
+        for i in range(9):
+            for k in range(len(self.toletance)):
+                self.x[k] = self.toletance[k]+str(self.row+9)
+            self.button.append(customtkinter.CTkSegmentedButton(self.tabview.tab("Вал (h14)"),
+                                                            width=50,
+                                                            corner_radius=0,
+                                                            selected_hover_color=("red", "gray"),
+                                                            selected_color=("red", "#4c4a48"),
+                                                            values=self.x,
+                                                            command=self.segmented_button_callback))
+            for z in range(len(self.x)):
+                self.x[z] = self.x[z].upper()
+            self.button1.append(customtkinter.CTkSegmentedButton(self.tabview.tab("Отверстие (H14)"),
+                                                            corner_radius=0,
+                                                            selected_hover_color=("red", "gray"),
+                                                            selected_color=("red", "#4c4a48"),
+                                                            values=self.x,
+                                                            command=self.segmented_button_callback))
+            self.button[self.row].grid(row=self.row, column=1, padx=0, pady=0)
+            self.button1[self.row].grid(row=self.row, column=1, padx=0, pady=0)
+            self.row += 1
+
+
+
+    def segmented_button_callback(self, value):  # Кнопка записи квалитета
+        print("segmented button clicked:", value)
+        self.list.my_list[self.id].button.configure(text=value)
+        self.list.checkbox_1.select()
+        self.destroy()
