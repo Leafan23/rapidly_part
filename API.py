@@ -24,22 +24,23 @@ class KompasAPI:
         self.kompas_document_3d = self.api7.IKompasDocument3D(self.kompas_document)
         self.part_7 = self.kompas_document_3d.TopPart
         self.property_keeper = self.api7.IPropertyKeeper(self.part_7)
+        self.property_mng = self.api7.IPropertyMng(self.application)
 
     def get_property_value(self, property_name):
-        self.property_mng = self.api7.IPropertyMng(self.application)
-        # self.property = self.property_mng.GetProperty(self.kompas_document, property_name)
-        # self.property_value = self.property_keeper.GetPropertyValue(self.property, '', True, True)
-        # i = 0
         for i in range(self.property_mng.PropertyCount(self.kompas_document)):  # ищем свойство по наименованию
             self.property = self.property_mng.GetProperty(self.kompas_document, i)
             if self.property.Name == property_name:
-
                 self.property_value = self.property_keeper.GetPropertyValue(self.property, "", True, True)
                 return self.property_value[1]
         return self.property_value[1]
 
-    def set_property(self):
-        pass
+    def set_property(self, property_name, property_value):
+        for i in range(self.property_mng.PropertyCount(self.kompas_document)):
+            self.property = self.property_mng.GetProperty(self.kompas_document, i)
+            if self.property.Name == property_name:
+                self.property_keeper.SetPropertyValue(self.property, property_value, True)
+                return self.property
+            i += 1
 
     # Получение значения габаритов детали
     def get_gabarit(self):
