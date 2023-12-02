@@ -48,5 +48,6 @@ if __name__ == "__main__":
     #  kompas_api.set_property("Наименование", '123')
     app = GUI.App(gabarit)
     app.mainloop()
+    print(app.main_string)
 
 

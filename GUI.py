@@ -44,15 +44,14 @@ class App(customtkinter.CTk):  # Main window of app
 
         self.button_event()  # Добавление строки с размерами
 
-    def return_main_string(self):
-        pass
-
     def do_button(self):  # Кнопка для БЧ детали
-        print(self.my_list[0].entry_2.get())
-        #  return self.my_list[0].
+        self.main_string.append('БЧ')
+        for self.m in range(len(self.my_list)):
+            self.main_string.append(self.my_list[self.m].return_dim())
+        self.destroy()
 
     def undo_button(self):  # Кнопка для чертежной детали
-        pass
+        self.destroy()
 
     def button_event(self):  # Кнопка для добавления строки с размерами
         self.my_list.append(DimensionField(master=self, gabarit=self.gabarit))
@@ -102,6 +101,9 @@ class DimensionField(customtkinter.CTkFrame):  # Рамка ополнитель
 
     def button_callback(self):
         self.tolerance = Tolerance(self)  # create window if its None or destroyed
+
+    def return_dim(self):
+        return [self.entry.get(), self.entry_2.get(), self.button._text, self.entry_3.get(), self.entry_4.get()]
 
     def change_button_value(self, value):
         self.button.configure(text=value)
