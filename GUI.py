@@ -63,7 +63,6 @@ class App(customtkinter.CTk):  # Main window of app
         self.row += 1
         self.field_add.grid(row=self.row + 1)
         self.field_delete.grid(row=self.row + 1)
-        print("Длина строки: ", self.row)  # delete after
         self.field_delete.configure(state="normal")
         if self.row > 8:
             self.field_add.configure(state="disabled")
@@ -75,7 +74,6 @@ class App(customtkinter.CTk):  # Main window of app
         self.row -= 1
         self.field_add.grid(row=self.row + 1)
         self.field_delete.grid(row=self.row + 1)
-        print("Длина строки: ", self.row)
         if self.row < 7:
             self.field_delete.configure(state="disabled")
         self.field_add.configure(state="normal")
@@ -124,7 +122,6 @@ class Tolerance(customtkinter.CTkToplevel):  # Класс окна квалит�
         self.id = id  # id of field
         self.attributes("-topmost", True)
         self.row = 0
-        #  self.string_number = 1
         self.toletance = ["n", "m", "k", "js", "h", "g", "f", "e", "d", "c"]
         self.x = ["n", "m", "k", "js", "h", "g", "f", "e", "d", "c"]
 

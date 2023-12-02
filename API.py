@@ -4,17 +4,6 @@ from win32com.client import Dispatch, gencache, VARIANT
 
 class KompasAPI:
     def __init__(self):
-        '''
-        #  Подключим константы API Компас
-        self.constants = gencache.EnsureModule("{75C9F5D0-B5B8-4526-8681-9903C567D2ED}", 0, 1, 0).constants
-        self.constants_3d = gencache.EnsureModule("{2CAF168C-7961-4B90-9DA2-701419BEEFE3}", 0, 1, 0).constants
-
-        #  Подключим описание интерфейсов API5
-        self.api5 = gencache.EnsureModule("{0422828C-F174-495E-AC5D-D31014DBBE87}", 0, 1, 0)
-        kompas_object = self.api5.KompasObject(
-            Dispatch("Kompas.Application.5")._oleobj_.QueryInterface(self.api5.KompasObject.CLSID, pythoncom.IID_IDispatch))
-        '''
-
         #  Подключим описание интерфейсов API7
         self.api7 = gencache.EnsureModule("{69AC2981-37C0-4379-84FD-5DD2F3C0A520}", 0, 1, 0)
         self.application = self.api7.IApplication(
@@ -57,4 +46,7 @@ class KompasAPI:
 
     # Проверка документ на деталь
     def check_part(self):
-        pass
+        if self.kompas_document.DocumentType != 4:
+            self.application.MessageBoxEx("Данный макрос работает только с деталью", "Документ не является деталью", 0)
+            return False
+        return True
