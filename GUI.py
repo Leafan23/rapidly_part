@@ -1,5 +1,6 @@
 import customtkinter
 
+
 class App(customtkinter.CTk):  # Main window of app
     def __init__(self, gabarit):
         super().__init__()
@@ -41,7 +42,7 @@ class App(customtkinter.CTk):  # Main window of app
         self.button_send_bch.grid(row=self.row + 4, column=4, padx=20, pady=20, sticky="w", columnspan=1)
 
         # Добавление строки с размерами
-        self.my_list.append(DimensionField(master=self, id=self.i, gabarit=self.gabarit, target=self.my_list))
+        self.my_list.append(DimensionField(master=self, gabarit=self.gabarit))
         self.my_list[self.i].grid(row=self.row, column=0, padx=20, pady=20, sticky="we", columnspan=5)
         self.i += 1
         self.row += 1
@@ -59,7 +60,7 @@ class App(customtkinter.CTk):  # Main window of app
         pass
 
     def button_event(self):  # Кнопка для добавления строки с размерами
-        self.my_list.append(DimensionField(master=self, id=self.i, gabarit=self.gabarit, target=self.my_list))
+        self.my_list.append(DimensionField(master=self, gabarit=self.gabarit))
         self.my_list[self.i].grid(row=self.row, column=0, padx=20, pady=20, sticky="we", columnspan=5)
         self.i += 1
         self.row += 1
@@ -84,12 +85,8 @@ class App(customtkinter.CTk):  # Main window of app
 
 
 class DimensionField(customtkinter.CTkFrame):  # Рамка ополнительных полей с размерами
-    def __init__(self, master, id, gabarit, target, **kwargs):
+    def __init__(self, master, gabarit='', **kwargs):
         super().__init__(master, **kwargs)
-
-        self.target = target
-        self.id = id
-        self.tolerance = None
 
         self.entry = customtkinter.CTkEntry(self, placeholder_text="L = ")
         self.entry.grid(row=1, column=0, padx=20, sticky="w", columnspan=1)
@@ -107,15 +104,15 @@ class DimensionField(customtkinter.CTkFrame):  # Рамка ополнитель
         self.entry_4.grid(row=2, column=3, padx=20, sticky="w", columnspan=1)
 
     def button_callback(self):
-        self.tolerance = Tolerance(self.id, self.target)  # create window if its None or destroyed
+        self.tolerance = Tolerance(self)  # create window if its None or destroyed
 
-        print("button pressed")
+    def change_button_value(self, value):
+        self.button.configure(text=value)
 
 
 class Tolerance(customtkinter.CTkToplevel):  # Класс окна квалитета
-    def __init__(self, id, target):
-        super().__init__()
-        self.list = target
+    def __init__(self, master):
+        super().__init__(master)
         self.title("Tolerance")
         self.geometry("+400+400")
         self.id = id  # id of field
@@ -125,13 +122,11 @@ class Tolerance(customtkinter.CTkToplevel):  # Класс окна квалит�
         self.toletance = ["n", "m", "k", "js", "h", "g", "f", "e", "d", "c"]
         self.x = ["n", "m", "k", "js", "h", "g", "f", "e", "d", "c"]
 
-
         self.tabview = customtkinter.CTkTabview(master=self)
         self.tabview.add("Вал (h14)")
         self.tabview.add("Отверстие (H14)")
         self.tabview.grid(row=0, column=0, padx=0, pady=(0, 0), sticky="we")
         self.button, self.button1 = [], []
-
 
         for i in range(9):
             for k in range(len(self.toletance)):
@@ -155,10 +150,7 @@ class Tolerance(customtkinter.CTkToplevel):  # Класс окна квалит�
             self.button1[self.row].grid(row=self.row, column=1, padx=0, pady=0)
             self.row += 1
 
-
-
     def segmented_button_callback(self, value):  # Кнопка записи квалитета
-        print("segmented button clicked:", value)
-        self.list.my_list[self.id].button.configure(text=value)
-        self.list.checkbox_1.select()
         self.destroy()
+        self.master.change_button_value(value)
+        self.master.master.checkbox_1.select()

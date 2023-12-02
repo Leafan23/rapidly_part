@@ -10,11 +10,13 @@ class MainString:  # Класс главной строки
         self.note = ""  # Примечание
         self.sub_name = ""  # Обозначение
 
+
 def dimension_to_string(dim):
     n = int(dim)
     print(int(n * 10) % 10, 'wqwqwqwqw')
     str(round(dim, 3))
     print(str(round(dim, 3)))
+
 
 if __name__ == "__main__":
     kompas_api = API.KompasAPI()
