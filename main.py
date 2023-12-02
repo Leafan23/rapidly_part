@@ -6,14 +6,20 @@ from func import *
 
 
 if __name__ == "__main__":
+    # Подключение к API компаса
     kompas_api = API.KompasAPI()
+
+    # Проверка документа на деталь
     if kompas_api.check_part():
         # Получение габаритных размеров
         gabarit_x, gabarit_y, gabarit_z = kompas_api.get_gabarit()
         gabarit = [dimension_to_string(gabarit_x), dimension_to_string(gabarit_y), dimension_to_string(gabarit_z)]
 
+        # Запуск графического приложения
         app = GUI.App(gabarit)
         app.mainloop()
+
+        # Обработка введенных значений и запись данных в компас
         if app.main_string[0] == 'БЧ':
             kompas_api.set_property('Форматы листов документа', 'БЧ')
             kompas_api.set_property('Примечание', smart_round(kompas_api.get_mass()/1000))
@@ -26,7 +32,6 @@ if __name__ == "__main__":
                     temp_part_name += convert_data_to_string(i, it_flag, tolerance_flag) + ' '
             part_name += '@/' + kompas_api.get_property_value('Материал') + '@/' + temp_part_name
             kompas_api.set_property('Наименование', part_name)
-
         else:
             kompas_api.set_property('Форматы листов документа', '')
             kompas_api.set_property('Примечание', '')
