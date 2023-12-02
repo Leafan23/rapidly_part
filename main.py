@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     print(kompas_api.get_mass())  # Заменить на запись свойства в примечание
     print(kompas_api.get_property_value("Наименование"))  # Значение свойства поз. 1
-    kompas_api.set_property("Наименование", '123')
+    #  kompas_api.set_property("Наименование", '123')
     app = GUI.App(gabarit)
     app.mainloop()
 

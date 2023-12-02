@@ -2,9 +2,10 @@ import customtkinter
 
 
 class App(customtkinter.CTk):  # Main window of app
-    def __init__(self, gabarit):
+    def __init__(self, gabarit=' '):
         super().__init__()
 
+        self.main_string = []  # [формат листа, наименование, Примечание(масса)]
         self.gabarit = gabarit
         self.title("my app")
         self.geometry("750x700")
@@ -41,20 +42,14 @@ class App(customtkinter.CTk):  # Main window of app
                                                        fg_color="#ffa500", text_color="black")
         self.button_send_bch.grid(row=self.row + 4, column=4, padx=20, pady=20, sticky="w", columnspan=1)
 
-        # Добавление строки с размерами
-        self.my_list.append(DimensionField(master=self, gabarit=self.gabarit))
-        self.my_list[self.i].grid(row=self.row, column=0, padx=20, pady=20, sticky="we", columnspan=5)
-        self.i += 1
-        self.row += 1
-        self.field_add.grid(row=self.row + 1)
-        self.field_delete.grid(row=self.row + 1)
-        print("Длина строки: ", self.row)  # delete after
-        self.field_delete.configure(state="normal")
-        if self.row > 8:
-            self.field_add.configure(state="disabled")
+        self.button_event()  # Добавление строки с размерами
+
+    def return_main_string(self):
+        pass
 
     def do_button(self):  # Кнопка для БЧ детали
         print(self.my_list[0].entry_2.get())
+        #  return self.my_list[0].
 
     def undo_button(self):  # Кнопка для чертежной детали
         pass
@@ -85,13 +80,15 @@ class App(customtkinter.CTk):  # Main window of app
 
 
 class DimensionField(customtkinter.CTkFrame):  # Рамка ополнительных полей с размерами
-    def __init__(self, master, gabarit='', **kwargs):
+    def __init__(self, master, gabarit, **kwargs):
         super().__init__(master, **kwargs)
 
         self.entry = customtkinter.CTkEntry(self, placeholder_text="L = ")
         self.entry.grid(row=1, column=0, padx=20, sticky="w", columnspan=1)
 
         self.entry_2 = customtkinter.CTkComboBox(self, values=gabarit)
+        if gabarit == ' ':
+            self.entry_2.set('Размер')
         self.entry_2.grid(row=1, column=1, padx=20, sticky="w", columnspan=1)
 
         self.button = customtkinter.CTkButton(self, text="Квалитет", command=self.button_callback)
