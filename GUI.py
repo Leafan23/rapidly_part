@@ -48,9 +48,12 @@ class App(customtkinter.CTk):  # Main window of app
         self.main_string.append('БЧ')
         for self.m in range(len(self.my_list)):
             self.main_string.append(self.my_list[self.m].return_dim())
+        self.main_string.append(self.checkbox_1.get())  # "Показывать квалитет"
+        self.main_string.append(self.checkbox_2.get())  # "Показывать допуск"
         self.destroy()
 
     def undo_button(self):  # Кнопка для чертежной детали
+        self.main_string = ['']
         self.destroy()
 
     def button_event(self):  # Кнопка для добавления строки с размерами
@@ -83,6 +86,7 @@ class DimensionField(customtkinter.CTkFrame):  # Рамка ополнитель
         super().__init__(master, **kwargs)
 
         self.entry = customtkinter.CTkEntry(self, placeholder_text="L = ")
+        self.entry.insert(0, "L = ")
         self.entry.grid(row=1, column=0, padx=20, sticky="w", columnspan=1)
 
         self.entry_2 = customtkinter.CTkComboBox(self, values=gabarit)
@@ -103,6 +107,9 @@ class DimensionField(customtkinter.CTkFrame):  # Рамка ополнитель
         self.tolerance = Tolerance(self)  # create window if its None or destroyed
 
     def return_dim(self):
+        if self.button._text == 'Квалитет':
+            self.button.configure(text='')
+
         return [self.entry.get(), self.entry_2.get(), self.button._text, self.entry_3.get(), self.entry_4.get()]
 
     def change_button_value(self, value):

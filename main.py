@@ -2,38 +2,7 @@
 
 import API
 import GUI
-
-
-class MainString:  # Класс главной строки
-    def __init__(self, id):
-        self.name = ""  # Наименование
-        self.format = ""  # Формат листа
-        self.note = ""  # Примечание
-        self.sub_name = ""  # Обозначение
-
-
-def dimension_to_string(dim):  # Преобразование Float размера в string с округленным значением и ',' вместо '.'
-    string = str(round(dim, 3)).replace(".", ",")
-    if string[-2:] == ',0':
-        string = string[:-2]
-        return string
-    return string
-
-
-def smart_round(part_mass):
-    if part_mass < 0.1:
-        part_mass *= 1000
-        return replacer(round(part_mass, 1)) + " г"
-    elif 0.1 <= part_mass <= 10:
-        return replacer(round(part_mass, 2)) + " кг"
-    elif 10 <= part_mass <= 100:
-        return replacer(round(part_mass, 1)) + " кг"
-    else:
-        return replacer(round(part_mass, 0)) + " кг"
-
-
-def replacer(number):
-    return str(number).replace('.', ',')
+from func import *
 
 
 if __name__ == "__main__":
@@ -43,11 +12,27 @@ if __name__ == "__main__":
     gabarit_x, gabarit_y, gabarit_z = kompas_api.get_gabarit()
     gabarit = [dimension_to_string(gabarit_x), dimension_to_string(gabarit_y), dimension_to_string(gabarit_z)]
 
-    print(kompas_api.get_mass())  # Заменить на запись свойства в примечание
-    print(kompas_api.get_property_value("Наименование"))  # Значение свойства поз. 1
-    #  kompas_api.set_property("Наименование", '123')
     app = GUI.App(gabarit)
     app.mainloop()
-    print(app.main_string)
+    if app.main_string[0] == 'БЧ':
+        kompas_api.set_property('Форматы листов документа', 'БЧ')
+        kompas_api.set_property('Примечание', smart_round(kompas_api.get_mass()/1000))
+        part_name = to_drawing(kompas_api.get_property_value('Наименование'))
+        temp_part_name = ''
+        for i in app.main_string:
+            if type(i) == list:
+                print(i)
+                temp_part_name += convert_data_to_string(i) + ' '
+            print('Временное имя: ', temp_part_name)
+        part_name += '@/' + kompas_api.get_property_value('Материал') + '@/' + temp_part_name
+        print(part_name)
+        kompas_api.set_property('Наименование', part_name)
+
+    else:
+        kompas_api.set_property('Форматы листов документа', '')
+        kompas_api.set_property('Примечание', '')
+        part_name = to_drawing(kompas_api.get_property_value('Наименование'))
+        kompas_api.set_property('Наименование', part_name)
+        print('Не БЧ')
 
 
