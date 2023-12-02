@@ -25,7 +25,6 @@ class KompasAPI:
         self.part_7 = self.kompas_document_3d.TopPart
         self.property_keeper = self.api7.IPropertyKeeper(self.part_7)
 
-
     def get_property_value(self, property_name):
         self.property_mng = self.api7.IPropertyMng(self.application)
         # self.property = self.property_mng.GetProperty(self.kompas_document, property_name)

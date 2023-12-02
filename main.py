@@ -1,6 +1,7 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
-import API, GUI
+import API
+import GUI
 
 
 class MainString:  # Класс главной строки
@@ -12,10 +13,11 @@ class MainString:  # Класс главной строки
 
 
 def dimension_to_string(dim):
-    n = int(dim)
-    print(int(n * 10) % 10, 'wqwqwqwqw')
-    str(round(dim, 3))
-    print(str(round(dim, 3)))
+    string = str(round(dim, 3)).replace(".", ",")
+    if string[-2:] == ',0':
+        string = string[:-2]
+        return string
+    return string
 
 
 if __name__ == "__main__":
@@ -23,11 +25,10 @@ if __name__ == "__main__":
 
     # Получение габаритных размеров
     gabarit_x, gabarit_y, gabarit_z,  = kompas_api.get_gabarit()
-    gabarit = [str(round(gabarit_x, 3)), str(round(gabarit_y, 3)), str(round(gabarit_z, 3))]
+    gabarit = [dimension_to_string(gabarit_x), dimension_to_string(gabarit_y), dimension_to_string(gabarit_z)]
 
     print(kompas_api.get_mass())  # Заменить на запись свойства в примечание
     print(kompas_api.get_property_value("Наименование"))  # Значение свойства поз. 1
-    dimension_to_string(gabarit_x)
     app = GUI.App(gabarit)
     app.mainloop()
 
