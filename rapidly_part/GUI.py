@@ -48,7 +48,7 @@ class App(customtkinter.CTk):  # Main window of app
 
         self.button_event()  # Добавление строки с размерами
 
-        self.version_lable = customtkinter.CTkLabel(self, text="v0.2(Build 6) 2023.03", text_color=('gray60', 'gray30'))
+        self.version_lable = customtkinter.CTkLabel(self, text="v0.2(Build 7) 2023.03", text_color=('gray60', 'gray30'))
         self.version_lable.grid(row=16, column=4, padx=20, pady=20, sticky="se")
 
     def do_button(self):  # Кнопка для БЧ детали
