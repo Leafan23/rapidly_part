@@ -7,26 +7,35 @@ class App(customtkinter.CTk):  # Main window of app
 
         self.main_string = []  # [формат листа, наименование, Примечание(масса)]
         self.gabarit = gabarit
-        self.title("my app")
+        self.title("Rapidly part")
         self.geometry("750x700")
         self.row = 6  # row for new dimension
         self.my_list = []  # list for field
         self.i = 0  # count for list
+        self.tolerance_check = customtkinter.BooleanVar()
+        self.tolerance_check.set(True)
+        self.end_butt = customtkinter.BooleanVar()
+        self.end_butt_string = customtkinter.StringVar()
 
+        '''
         self.lable_0 = customtkinter.CTkLabel(self, text=" ", fg_color="transparent")
         self.lable_0.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="w")
-
+        
         self.lable_1 = customtkinter.CTkLabel(self, text=" ", fg_color="transparent")
         self.lable_1.grid(row=1, column=1, padx=20, pady=(0, 20), sticky="w")
+        '''
 
         self.checkbox_1 = customtkinter.CTkCheckBox(self, text="Показывать квалитет")
-        self.checkbox_1.grid(row=1, column=3, padx=20, pady=(0, 20), sticky="w")
+        self.checkbox_1.grid(row=1, column=3, padx=20, pady=(10, 20))
 
-        self.checkbox_2 = customtkinter.CTkCheckBox(self, text="Показывать допуск")
-        self.checkbox_2.grid(row=1, column=4, padx=20, pady=(0, 20), sticky="we")
+        self.checkbox_2 = customtkinter.CTkCheckBox(self, text="Показывать допуск", variable=self.tolerance_check)
+        self.checkbox_2.grid(row=1, column=4, padx=20, pady=(10, 20))
+
+        self.checkbox_3 = customtkinter.CTkCheckBox(self, text="Обработка торцов", command=self.end_butt_func, variable=self.end_butt)
+        self.checkbox_3.grid(row=1, column=1, padx=20, pady=(10, 20))
 
         self.field_add = customtkinter.CTkButton(self, text="Добавить размер", command=self.button_event)
-        self.field_add.grid(row=self.row, column=0, padx=20, pady=20, sticky="w")
+        self.field_add.grid(row=self.row, column=0, padx=20, pady=20)
 
         self.field_delete = customtkinter.CTkButton(self, text="Убрать размер", command=self.button_event_delete,
                                                     state="disabled")
@@ -50,11 +59,21 @@ class App(customtkinter.CTk):  # Main window of app
             self.main_string.append(self.my_list[self.m].return_dim())
         self.main_string.append(self.checkbox_1.get())  # "Показывать квалитет"
         self.main_string.append(self.checkbox_2.get())  # "Показывать допуск"
+        self.main_string.append(self.checkbox_3.get())  # "Обработка торцов"
         self.destroy()
 
     def undo_button(self):  # Кнопка для чертежной детали
         self.main_string = ['']
         self.destroy()
+
+    def end_butt_func(self):
+        print(self.end_butt.get())
+        if self.end_butt.get():
+            self.entry_end_butt = customtkinter.CTkEntry(self, placeholder_text="Обработка торцов Ra 12,5", textvariable=self.end_butt_string)
+            self.entry_end_butt.grid(row=1, padx=20, pady=(10, 16))
+        else:
+            self.entry_end_butt.destroy()
+
 
     def button_event(self):  # Кнопка для добавления строки с размерами
         self.my_list.append(DimensionField(master=self, gabarit=self.gabarit))

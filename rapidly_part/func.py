@@ -15,7 +15,8 @@ def smart_round(part_mass):
     elif 10 <= part_mass <= 100:
         return replacer(round(part_mass, 1)) + " кг"
     else:
-        return replacer(round(part_mass, 0)) + " кг"
+        i = replacer(round(part_mass, 0))
+        return i[:-2] + " кг"
 
 
 def replacer(number):
