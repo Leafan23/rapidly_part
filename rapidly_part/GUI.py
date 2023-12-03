@@ -8,6 +8,8 @@ class App(customtkinter.CTk):  # Main window of app
         self.main_string = []  # [формат листа, наименование, Примечание(масса)]
         self.gabarit = gabarit
         self.title("Rapidly part")
+        customtkinter.set_appearance_mode("system")  # Modes: system (default), light, dark
+        customtkinter.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
         self.geometry("750x700")
         self.row = 6  # row for new dimension
         self.my_list = []  # list for field
@@ -16,14 +18,7 @@ class App(customtkinter.CTk):  # Main window of app
         self.tolerance_check.set(True)
         self.end_butt = customtkinter.BooleanVar()
         self.end_butt_string = customtkinter.StringVar()
-
-        '''
-        self.lable_0 = customtkinter.CTkLabel(self, text=" ", fg_color="transparent")
-        self.lable_0.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="w")
-        
-        self.lable_1 = customtkinter.CTkLabel(self, text=" ", fg_color="transparent")
-        self.lable_1.grid(row=1, column=1, padx=20, pady=(0, 20), sticky="w")
-        '''
+        self.end_butt_string.set('Ra 12,5')
 
         self.checkbox_1 = customtkinter.CTkCheckBox(self, text="Показывать квалитет")
         self.checkbox_1.grid(row=1, column=3, padx=20, pady=(10, 20))
@@ -53,6 +48,9 @@ class App(customtkinter.CTk):  # Main window of app
 
         self.button_event()  # Добавление строки с размерами
 
+        self.version_lable = customtkinter.CTkLabel(self, text="v0.2(Build 6) 2023.03", text_color=('gray60', 'gray30'))
+        self.version_lable.grid(row=16, column=4, padx=20, pady=20, sticky="se")
+
     def do_button(self):  # Кнопка для БЧ детали
         self.main_string.append('БЧ')
         for self.m in range(len(self.my_list)):
@@ -67,9 +65,10 @@ class App(customtkinter.CTk):  # Main window of app
         self.destroy()
 
     def end_butt_func(self):
-        print(self.end_butt.get())
         if self.end_butt.get():
-            self.entry_end_butt = customtkinter.CTkEntry(self, placeholder_text="Обработка торцов Ra 12,5", textvariable=self.end_butt_string)
+            self.entry_end_butt = customtkinter.CTkEntry(self,
+                                                         placeholder_text="Обработка торцов Ra 12,5",
+                                                         textvariable=self.end_butt_string)
             self.entry_end_butt.grid(row=1, padx=20, pady=(10, 16))
         else:
             self.entry_end_butt.destroy()
