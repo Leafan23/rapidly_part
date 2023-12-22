@@ -1,8 +1,11 @@
 import customtkinter
 
+# gui_data[]:
+# 0 -
+
 
 class App(customtkinter.CTk):  # Main window of app
-    def __init__(self, gabarit=' '):
+    def __init__(self, gabarit=' ', gui_data=0):
         super().__init__()
 
         self.main_string = []  # [формат листа, наименование, Примечание(масса)]
