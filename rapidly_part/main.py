@@ -15,6 +15,8 @@ if __name__ == "__main__":
         gabarit_x, gabarit_y, gabarit_z = kompas_api.get_gabarit()
         gabarit = [dimension_to_string(gabarit_x), dimension_to_string(gabarit_y), dimension_to_string(gabarit_z)]
 
+        # Прочитать данные с документа
+
         # Запуск графического приложения
         app = GUI.App(gabarit)
         app.mainloop()

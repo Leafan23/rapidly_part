@@ -76,3 +76,22 @@ def to_drawing(s=""):
     return s
 
 
+def data_handler(string_data=''):
+    if string_data == '':
+        return 0
+    else:
+        return string_data.split('$')
+
+
+def data_pack(data):
+    vault = '$'.join(data)
+    return vault
+
+
+def bool_converter(data):
+    if data == 'True':
+        return True
+    elif data == 'False':
+        return False
+    return None
+

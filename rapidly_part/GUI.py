@@ -1,12 +1,36 @@
 import customtkinter
+import func
 
 # gui_data[]:
-# 0 -
+# 0 - Обработка торцов чекбокс
+# 1 - Значение шероховатости обработки торцов
+# 2 - Чекбокс квалитета
+# 3 - Чекбокс допусков
+# 4 - Строка до размера №1
+# 5 - Значение размера №1
+# 6 - Квалитет №1
+# 7 - Верхний допуск №1
+# 8 - Нижний допуск №1
+# 9 - Строка до размера №2
+# 10 - Значение размера №2
+# 11 - Квалитет №2
+# 12 - Верхний допуск №2
+# 13 - Нижний допуск №2
+# 14 - Строка до размера №3
+# 15 - Значение размера №3
+# 16 - Квалитет №3
+# 17 - Верхний допуск №3
+# 18 - Нижний допуск №3
 
 
 class App(customtkinter.CTk):  # Main window of app
-    def __init__(self, gabarit=' ', gui_data=0):
+    def __init__(self, gabarit=' ', gui_data='False$Ra 12,5$False$True$L = $$Квалитет$$$H = $$Квалитет$$$W = $$Квалитет$$$'):
         super().__init__()
+
+        self.data = gui_data.split('$')
+        self.dim_data = [[self.data[4], self.data[5], self.data[6], self.data[7], self.data[8]],
+                         [self.data[9], self.data[10], self.data[11], self.data[12], self.data[13]],
+                         [self.data[14], self.data[15], self.data[16], self.data[17], self.data[18]]]
 
         self.main_string = []  # [формат листа, наименование, Примечание(масса)]
         self.gabarit = gabarit
@@ -17,13 +41,20 @@ class App(customtkinter.CTk):  # Main window of app
         self.row = 6  # row for new dimension
         self.my_list = []  # list for field
         self.i = 0  # count for list
-        self.tolerance_check = customtkinter.BooleanVar()
-        self.tolerance_check.set(True)
-        self.end_butt = customtkinter.BooleanVar()
-        self.end_butt_string = customtkinter.StringVar()
-        self.end_butt_string.set('Ra 12,5')
 
-        self.checkbox_1 = customtkinter.CTkCheckBox(self, text="Показывать квалитет")
+        self.checkbox_1_check = customtkinter.BooleanVar()
+        self.checkbox_1_check.set(func.bool_converter(self.data[2]))
+
+        self.tolerance_check = customtkinter.BooleanVar()
+        self.tolerance_check.set(func.bool_converter(self.data[3]))  # третье значение данных строки
+
+        self.end_butt = customtkinter.BooleanVar()
+        self.end_butt.set(func.bool_converter(self.data[0]))  # нулевое значение данных строки
+
+        self.end_butt_string = customtkinter.StringVar()
+        self.end_butt_string.set(self.data[1])  # первое значение данных строки
+
+        self.checkbox_1 = customtkinter.CTkCheckBox(self, text="Показывать квалитет", variable=self.checkbox_1_check)
         self.checkbox_1.grid(row=1, column=3, padx=20, pady=(10, 20))
 
         self.checkbox_2 = customtkinter.CTkCheckBox(self, text="Показывать допуск", variable=self.tolerance_check)
@@ -31,6 +62,8 @@ class App(customtkinter.CTk):  # Main window of app
 
         self.checkbox_3 = customtkinter.CTkCheckBox(self, text="Обработка торцов", command=self.end_butt_func, variable=self.end_butt)
         self.checkbox_3.grid(row=1, column=1, padx=20, pady=(10, 20))
+        if func.bool_converter(self.data[0]):
+            self.end_butt_func()
 
         self.field_add = customtkinter.CTkButton(self, text="Добавить размер", command=self.button_event)
         self.field_add.grid(row=self.row, column=0, padx=20, pady=20)
@@ -78,7 +111,7 @@ class App(customtkinter.CTk):  # Main window of app
 
 
     def button_event(self):  # Кнопка для добавления строки с размерами
-        self.my_list.append(DimensionField(master=self, gabarit=self.gabarit))
+        self.my_list.append(DimensionField(master=self, gabarit=self.gabarit, gui_data=self.dim_data[self.i]))
         self.my_list[self.i].grid(row=self.row, column=0, padx=20, pady=20, sticky="we", columnspan=5)
         self.i += 1
         self.row += 1
@@ -101,25 +134,37 @@ class App(customtkinter.CTk):  # Main window of app
 
 
 class DimensionField(customtkinter.CTkFrame):  # Рамка ополнительных полей с размерами
-    def __init__(self, master, gabarit, **kwargs):
+    def __init__(self, master, gabarit, gui_data, **kwargs):
         super().__init__(master, **kwargs)
 
+        self.dimension = []
+
+        self.dim_down = ''
+        if gui_data[1] != '':
+            self.dimension.append(gui_data[1])
+        for i in gabarit:
+            self.dimension.append(i)
+
         self.entry = customtkinter.CTkEntry(self, placeholder_text="L = ")
-        self.entry.insert(0, "L = ")
+        self.entry.insert(0, gui_data[0])  # первые данные тут
         self.entry.grid(row=1, column=0, padx=20, sticky="w", columnspan=1)
 
-        self.entry_2 = customtkinter.CTkComboBox(self, values=gabarit)
+        self.entry_2 = customtkinter.CTkComboBox(self, values=self.dimension)
         if gabarit == ' ':
             self.entry_2.set('Размер')
         self.entry_2.grid(row=1, column=1, padx=20, sticky="w", columnspan=1)
 
-        self.button = customtkinter.CTkButton(self, text="Квалитет", command=self.button_callback)
+        self.button = customtkinter.CTkButton(self, text=gui_data[2], command=self.button_callback)
         self.button.grid(row=1, column=2, padx=20, pady=20, sticky="w", columnspan=1)
 
         self.entry_3 = customtkinter.CTkEntry(self, placeholder_text="Верхний допуск")
+        if gui_data[3] != '':
+            self.entry_3.insert(0, gui_data[3])
         self.entry_3.grid(row=0, column=3, padx=20, sticky="w", columnspan=1)
 
         self.entry_4 = customtkinter.CTkEntry(self, placeholder_text="Нижний допуск")
+        if gui_data[4] != '':
+            self.entry_4.insert(0, gui_data[4])
         self.entry_4.grid(row=2, column=3, padx=20, sticky="w", columnspan=1)
 
     def button_callback(self):
