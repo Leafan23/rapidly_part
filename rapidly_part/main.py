@@ -23,6 +23,7 @@ if __name__ == "__main__":
 
         # Обработка введенных значений и запись данных в компас
         if app.main_string != [] and app.main_string[0] == 'БЧ':
+            kompas_api.add_property()
             kompas_api.set_property('Форматы листов документа', 'БЧ')
             kompas_api.set_property('Примечание', smart_round(kompas_api.get_mass()/1000))
             part_name = to_drawing(kompas_api.get_property_value('Наименование'))

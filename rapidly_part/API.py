@@ -4,12 +4,17 @@ from win32com.client import Dispatch, gencache, VARIANT
 
 class KompasAPI:
     def __init__(self):
+        # Подключаем константы
+
+        self.constants = gencache.EnsureModule("{75C9F5D0-B5B8-4526-8681-9903C567D2ED}", 0, 1, 0).constants
+        self.constants_3d = gencache.EnsureModule("{2CAF168C-7961-4B90-9DA2-701419BEEFE3}", 0, 1, 0).constants
+
         #  Подключим описание интерфейсов API7
         self.api7 = gencache.EnsureModule("{69AC2981-37C0-4379-84FD-5DD2F3C0A520}", 0, 1, 0)
         self.application = self.api7.IApplication(
             Dispatch("Kompas.Application.7")._oleobj_.QueryInterface(self.api7.IApplication.CLSID, pythoncom.IID_IDispatch))
 
-        self.kompas_document = self.application.ActiveDocument
+        self.kompas_document = self.application.ActiveDocument # Указатель на текущий документ
         self.kompas_document_3d = self.api7.IKompasDocument3D(self.kompas_document)
         self.part_7 = self.kompas_document_3d.TopPart
         self.property_keeper = self.api7.IPropertyKeeper(self.part_7)
@@ -50,3 +55,20 @@ class KompasAPI:
             self.application.MessageBoxEx("Данный макрос работает только с деталью", "Документ не является деталью", 0)
             return False
         return True
+
+    def find_property(self):
+        pass
+
+    def add_property(self, property_name=r'My_new_property'):
+
+        empty_val = VARIANT(pythoncom.VT_EMPTY, None)
+
+        custom_property = self.api7.IProperty(self.property_mng.AddProperty(empty_val, empty_val))
+        custom_property.DataType = self.constants.ksPropertyDataTypeString  # Тип свойства - строка
+        custom_property.Name = property_name
+        custom_property.Update()
+        print('Свойство добавлено')
+
+        return custom_property
+
+
