@@ -42,7 +42,10 @@ if __name__ == "__main__":
             if app.main_string[-1] == 1:
                 part_name = part_name + '@/' + 'Обработка торцов ' + '@+171~ ' + app.end_butt_string.get()
             kompas_api.set_property('Наименование', part_name)
-            print(app.main_string)
+            #m = app.main_string
+            #m.extend(app.main_string[1])
+            #s = app.end_butt_string.get()
+            print(app.main_string, app.end_butt_string.get())
         elif app.main_string != [] and app.main_string[0] == '':
             kompas_api.set_property('Форматы листов документа', '')
             kompas_api.set_property('Примечание', '')
