@@ -24,7 +24,7 @@ import func
 
 
 class App(customtkinter.CTk):  # Main window of app
-    def __init__(self, gabarit=' ', gui_data='False$Ra 12,5$False$True$L = $$Квалитет$$$H = $$Квалитет$$$W = $$Квалитет$$$'):
+    def __init__(self, gabarit=' ', gui_data=r'False$Ra 12,5$False$True$L = $$Квалитет$$$H = $$Квалитет$$$W = $$Квалитет$$$'):
         super().__init__()
 
         self.data = gui_data.split('$')
@@ -33,6 +33,7 @@ class App(customtkinter.CTk):  # Main window of app
                          [self.data[14], self.data[15], self.data[16], self.data[17], self.data[18]]]
 
         self.main_string = []  # [формат листа, наименование, Примечание(масса)]
+
         self.gabarit = gabarit
         self.title("Rapidly part")
         customtkinter.set_appearance_mode("system")  # Modes: system (default), light, dark

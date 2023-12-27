@@ -22,11 +22,11 @@ class KompasAPI:
 
     def get_property_value(self, property_name):
         for i in range(self.property_mng.PropertyCount(self.kompas_document)):  # ищем свойство по наименованию
-            self.property = self.property_mng.GetProperty(self.kompas_document, i)
-            if self.property.Name == property_name:
-                self.property_value = self.property_keeper.GetPropertyValue(self.property, "", True, True)
+            property = self.property_mng.GetProperty(self.kompas_document, i)
+            if property.Name == property_name:
+                self.property_value = self.property_keeper.GetPropertyValue(property, "", True, True)
                 return self.property_value[1]
-        return self.property_value[1]
+        return False
 
     def set_property(self, property_name, property_value):
         for i in range(self.property_mng.PropertyCount(self.kompas_document)):
@@ -56,18 +56,15 @@ class KompasAPI:
             return False
         return True
 
-    def find_property(self):
-        pass
 
-    def add_property(self, property_name=r'My_new_property'):
+    def add_property(self, property_name=r'property_for_rapidly_part'):
 
         empty_val = VARIANT(pythoncom.VT_EMPTY, None)
 
-        custom_property = self.api7.IProperty(self.property_mng.AddProperty(empty_val, empty_val))
+        custom_property = self.api7.IProperty(self.property_mng.AddProperty(self.kompas_document, empty_val))
         custom_property.DataType = self.constants.ksPropertyDataTypeString  # Тип свойства - строка
         custom_property.Name = property_name
         custom_property.Update()
-        print('Свойство добавлено')
 
         return custom_property
 
