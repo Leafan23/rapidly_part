@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
         # Прочитать данные с документа
         if kompas_api.get_property_value(r'property_for_rapidly_part') == False:
-            data = r'L = $$Квалитет$$$H = $$Квалитет$$$W = $$Квалитет$$$False$True$False$Ra 12,5'
+            data = r'1$L = $$Квалитет$$$0$H = $$Квалитет$$$0$W = $$Квалитет$$$False$True$False$Ra 12,5'
             kompas_api.add_property(r'property_for_rapidly_part')
             kompas_api.set_property(r'property_for_rapidly_part', data)
         else:

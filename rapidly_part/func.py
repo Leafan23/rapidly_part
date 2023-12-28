@@ -105,7 +105,7 @@ def data_convert(data=['БЧ', ['L = ', '160', '', '', ''], 0, 1, 0], *q):
             buffer.extend(i)
             count += 1
     while count < 3:
-        buffer.append('$$$$')
+        buffer.append('$$$$$')
         count += 1
 
     for i in data:
