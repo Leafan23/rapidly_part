@@ -47,8 +47,6 @@ if __name__ == "__main__":
             #s = app.end_butt_string.get()
             s = data_convert(app.main_string, app.end_butt_string.get())
             kompas_api.set_property(r'property_for_rapidly_part', s)
-            print(s)
-            print(app.main_string, app.end_butt_string.get())
         elif app.main_string != [] and app.main_string[0] == '':
             kompas_api.set_property('Форматы листов документа', '')
             kompas_api.set_property('Примечание', '')

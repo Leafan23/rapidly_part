@@ -30,7 +30,6 @@ class App(customtkinter.CTk):  # Main window of app
         super().__init__()
 
         self.data = gui_data.split('$')
-        print(self.data)
         self.dim_data = [[self.data[0], self.data[1], self.data[2], self.data[3], self.data[4], self.data[5]],
                          [self.data[6], self.data[7], self.data[8], self.data[9], self.data[10], self.data[11]],
                          [self.data[12], self.data[13], self.data[14], self.data[15], self.data[16], self.data[17]]]
@@ -87,7 +86,6 @@ class App(customtkinter.CTk):  # Main window of app
         self.button_send_bch.grid(row=self.row + 4, column=4, padx=20, pady=20, sticky="w", columnspan=1)
 
         for i in self.dim_data:
-            print(i)
             if i[0] == '1':
                 self.button_event()
 
