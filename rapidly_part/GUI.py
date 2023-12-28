@@ -2,35 +2,38 @@ import customtkinter
 import func
 
 # gui_data[]:
-# 0 - Обработка торцов чекбокс
-# 1 - Значение шероховатости обработки торцов
-# 2 - Чекбокс квалитета
-# 3 - Чекбокс допусков
-# 4 - Строка до размера №1
-# 5 - Значение размера №1
-# 6 - Квалитет №1
-# 7 - Верхний допуск №1
-# 8 - Нижний допуск №1
-# 9 - Строка до размера №2
-# 10 - Значение размера №2
-# 11 - Квалитет №2
-# 12 - Верхний допуск №2
-# 13 - Нижний допуск №2
-# 14 - Строка до размера №3
-# 15 - Значение размера №3
-# 16 - Квалитет №3
-# 17 - Верхний допуск №3
-# 18 - Нижний допуск №3
+
+# 0 - Строка до размера №1
+# 1 - Значение размера №1
+# 2 - Квалитет №1
+# 3 - Верхний допуск №1
+# 4 - Нижний допуск №1
+# 5 - Строка до размера №2
+# 6 - Значение размера №2
+# 7 - Квалитет №2
+# 8 - Верхний допуск №2
+# 9 - Нижний допуск №2
+# 10 - Строка до размера №3
+# 11 - Значение размера №3
+# 12 - Квалитет №3
+# 13 - Верхний допуск №3
+# 14 - Нижний допуск №3
+# 15 - Чекбокс квалитета =>
+# 16 - Чекбокс допусков =>
+# 17 - Обработка торцов чекбокс =>
+# 18 - Значение шероховатости обработки торцов =>
+
 
 
 class App(customtkinter.CTk):  # Main window of app
-    def __init__(self, gabarit=' ', gui_data=r'False$Ra 12,5$False$True$L = $$Квалитет$$$H = $$Квалитет$$$W = $$Квалитет$$$'):
+    def __init__(self, gabarit=' ', gui_data=r'L = $$Квалитет$$$H = $$Квалитет$$$W = $$Квалитет$$$False$True$False$Ra 12,5'):
         super().__init__()
 
         self.data = gui_data.split('$')
-        self.dim_data = [[self.data[4], self.data[5], self.data[6], self.data[7], self.data[8]],
-                         [self.data[9], self.data[10], self.data[11], self.data[12], self.data[13]],
-                         [self.data[14], self.data[15], self.data[16], self.data[17], self.data[18]]]
+        print(self.data)
+        self.dim_data = [[self.data[0], self.data[1], self.data[2], self.data[3], self.data[4]],
+                         [self.data[5], self.data[6], self.data[7], self.data[8], self.data[9]],
+                         [self.data[10], self.data[11], self.data[12], self.data[13], self.data[14]]]
 
         self.main_string = []  # [формат листа, наименование, Примечание(масса)]
 
@@ -44,16 +47,16 @@ class App(customtkinter.CTk):  # Main window of app
         self.i = 0  # count for list
 
         self.checkbox_1_check = customtkinter.BooleanVar()
-        self.checkbox_1_check.set(func.bool_converter(self.data[2]))
+        self.checkbox_1_check.set(func.bool_converter(self.data[15]))
 
         self.tolerance_check = customtkinter.BooleanVar()
-        self.tolerance_check.set(func.bool_converter(self.data[3]))  # третье значение данных строки
+        self.tolerance_check.set(func.bool_converter(self.data[16]))  # третье значение данных строки
 
         self.end_butt = customtkinter.BooleanVar()
-        self.end_butt.set(func.bool_converter(self.data[0]))  # нулевое значение данных строки
+        self.end_butt.set(func.bool_converter(self.data[17]))  # нулевое значение данных строки
 
         self.end_butt_string = customtkinter.StringVar()
-        self.end_butt_string.set(self.data[1])  # первое значение данных строки
+        self.end_butt_string.set(self.data[18])  # первое значение данных строки
 
         self.checkbox_1 = customtkinter.CTkCheckBox(self, text="Показывать квалитет", variable=self.checkbox_1_check)
         self.checkbox_1.grid(row=1, column=3, padx=20, pady=(10, 20))
@@ -63,7 +66,7 @@ class App(customtkinter.CTk):  # Main window of app
 
         self.checkbox_3 = customtkinter.CTkCheckBox(self, text="Обработка торцов", command=self.end_butt_func, variable=self.end_butt)
         self.checkbox_3.grid(row=1, column=1, padx=20, pady=(10, 20))
-        if func.bool_converter(self.data[0]):
+        if func.bool_converter(self.data[17]):
             self.end_butt_func()
 
         self.field_add = customtkinter.CTkButton(self, text="Добавить размер", command=self.button_event)
