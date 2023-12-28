@@ -96,7 +96,7 @@ def bool_converter(data):
     return None
 
 
-def data_convert(data=['БЧ', ['L = ', '160', '', '', ''], 0, 1, 0], *q):
+def data_convert(data, *q):
     buffer = []
     count = 0
 
@@ -120,5 +120,3 @@ def data_convert(data=['БЧ', ['L = ', '160', '', '', ''], 0, 1, 0], *q):
     data = '$'.join(buffer)
 
     return data
-
-
