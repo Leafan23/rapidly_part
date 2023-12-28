@@ -45,6 +45,8 @@ if __name__ == "__main__":
             #m = app.main_string
             #m.extend(app.main_string[1])
             #s = app.end_butt_string.get()
+            s = data_convert(app.main_string, app.end_butt_string.get())
+            print(s)
             print(app.main_string, app.end_butt_string.get())
         elif app.main_string != [] and app.main_string[0] == '':
             kompas_api.set_property('Форматы листов документа', '')

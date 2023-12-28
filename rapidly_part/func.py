@@ -95,3 +95,30 @@ def bool_converter(data):
         return False
     return None
 
+
+def data_convert(data=['БЧ', ['L = ', '160', '', '', ''], 0, 1, 0], *q):
+    buffer = []
+    count = 0
+
+    for i in data:
+        if type(i) == list:
+            buffer.extend(i)
+            count += 1
+    while count < 3:
+        buffer.append('$$$$')
+        count += 1
+
+    for i in data:
+        if type(i) == int:
+            if i == 0:
+                buffer.append('False')
+            else:
+                buffer.append('True')
+
+    for i in q:
+        buffer.append(i)
+    data = '$'.join(buffer)
+
+    return data
+
+
