@@ -38,7 +38,9 @@ if __name__ == "__main__":
             for i in app.main_string:
                 if type(i) == list:
                     temp_part_name += convert_data_to_string(i, it_flag, tolerance_flag) + ' '
-            part_name += '@/' + kompas_api.get_property_value('Материал') + '@/' + temp_part_name
+            part_name += '@/' + kompas_api.get_property_value('Материал')
+            if temp_part_name != '':
+                part_name += '@/' + temp_part_name
             if app.main_string[-1] == 1:
                 part_name = part_name + '@/' + 'Обработка торцов ' + '@+171~ ' + app.end_butt_string.get()
             kompas_api.set_property('Наименование', part_name)
