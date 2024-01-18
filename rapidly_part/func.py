@@ -43,11 +43,11 @@ def read_dim(dim=''):
 
 
 def convert_data_to_string(data, it_flag=0, tolerance_flag=0):
-    variable = data[0]
-    dim = data[1]
-    it_grade = data[2]
-    upper_deviation = read_dim(data[3])
-    lower_deviation = read_dim(data[4])
+    variable = data[1]
+    dim = data[2]
+    it_grade = data[3]
+    upper_deviation = read_dim(data[4])
+    lower_deviation = read_dim(data[5])
     if it_grade == '':
         it_flag = 0
     if it_flag == 0:
