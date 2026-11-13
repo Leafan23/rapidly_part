@@ -1,4 +1,4 @@
-from models import Dimension, Deviation, PartData
+from models import Dimension, Deviation, PartData, format_number
 
 
 
@@ -40,6 +40,25 @@ def format_dimension(dim: Dimension, show_it_grade: bool, show_tolerance: bool) 
                 result += dev_str
     return result
 
+
+def format_mass(part_mass: float) -> str:
+    """Форматирует массу детали в удобочитаемый вид (г/кг)."""
+    if part_mass < 0.1:
+        return format_number(part_mass * 1000, 1) + " г"
+    elif part_mass <= 10:
+        return format_number(part_mass, 2) + " кг"
+    elif part_mass <= 100:
+        return format_number(part_mass, 1) + " кг"
+    else:
+        return format_number(part_mass, 0) + " кг"
+
+
+def to_drawing(s: str = "") -> str:
+    """Отрезает всё, что начинается с '@' (возвращает к чертежной детали)."""
+    i = s.find("@")
+    if i == -1:
+        return s
+    return s[:i]
 
 
 if __name__ == '__main__':

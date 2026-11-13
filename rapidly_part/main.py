@@ -1,54 +1,69 @@
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
 import API
 import GUI
-from func import *
+import serialization
+from models import PartData, format_number
+from formatting import format_dimension, format_mass, to_drawing
 
+PROPERTY_NAME = r'property_for_rapidly_part'
 
 if __name__ == "__main__":
-    # Подключение к API компаса
     kompas_api = API.KompasAPI()
 
-    # Проверка документа на деталь
     if kompas_api.check_part():
-        # Получение габаритных размеров
-        gabarit_x, gabarit_y, gabarit_z = kompas_api.get_gabarit()
-        gabarit = [dimension_to_string(gabarit_x), dimension_to_string(gabarit_y), dimension_to_string(gabarit_z)]
+        # 1. Получаем габариты (используем format_number вместо dimension_to_string)
+        gx, gy, gz = kompas_api.get_gabarit()
+        gabarit = [format_number(gx), format_number(gy), format_number(gz)]
 
-        # Прочитать данные с документа
-        if kompas_api.get_property_value(r'property_for_rapidly_part') == False:
-            data = r'1$L = $$Квалитет$$$0$H = $$Квалитет$$$0$W = $$Квалитет$$$False$True$False$Ra 12,5'
-            kompas_api.add_property(r'property_for_rapidly_part')
-            kompas_api.set_property(r'property_for_rapidly_part', data)
+        # 2. Читаем сохраненные данные
+        stored_data = kompas_api.get_property_value(PROPERTY_NAME)
+        name_prop = kompas_api.get_property_value('Наименование')
+
+        # 3. Определяем, откуда брать PartData
+        if stored_data:
+            part_data = serialization.parse_part_data(stored_data)
+        elif name_prop and '@/' in name_prop:
+            part_data = serialization.parse_name_property(name_prop)
+            part_data.show_it_grade = True
+            part_data.show_tolerance = True
         else:
-            data = kompas_api.get_property_value(r'property_for_rapidly_part')
+            part_data = serialization.parse_part_data("")
+            kompas_api.add_property(PROPERTY_NAME)
 
-        # Запуск графического приложения
-        app = GUI.App(gabarit, data)
+        # 4. Запуск GUI
+        app = GUI.App(gabarit, part_data)
         app.mainloop()
 
-        # Обработка введенных значений и запись данных в компас
-        if app.main_string != [] and app.main_string[0] == 'БЧ':
+        # 5. Обработка результата
+        if app.result is not None:
+            result_data = app.result
+
             kompas_api.set_property('Форматы листов документа', 'БЧ')
-            kompas_api.set_property('Примечание', smart_round(kompas_api.get_mass()/1000))
+            # Используем format_mass вместо smart_round
+            kompas_api.set_property('Примечание', format_mass(kompas_api.get_mass() / 1000))
+
             part_name = to_drawing(kompas_api.get_property_value('Наименование'))
-            temp_part_name = ''
-            it_flag = app.main_string[-3]
-            tolerance_flag = app.main_string[-2]
-            for i in app.main_string:
-                if type(i) == list:
-                    temp_part_name += convert_data_to_string(i, it_flag, tolerance_flag) + ' '
-            part_name += '@/' + kompas_api.get_property_value('Материал')
-            if temp_part_name != '':
-                part_name += '@/' + temp_part_name
-            if app.main_string[-1] == 1:
-                part_name = part_name + '@/' + 'Обработка торцов ' + '@+171~ ' + app.end_butt_string.get()
+            material = kompas_api.get_property_value('Материал')
+            part_name += '@/' + material
+
+            dims_str_list = []
+            for dim in result_data.dimensions:
+                if dim.visible:
+                    formatted_dim = format_dimension(dim, result_data.show_it_grade, result_data.show_tolerance)
+                    if formatted_dim.strip():
+                        dims_str_list.append(formatted_dim)
+
+            if dims_str_list:
+                part_name += '@/' + ' '.join(dims_str_list)
+
+            if result_data.end_processing:
+                part_name += '@/' + 'Обработка торцов ' + '@+171~ ' + result_data.end_processing_value
+
             kompas_api.set_property('Наименование', part_name)
-            kompas_api.set_property(r'property_for_rapidly_part', data_convert(app.main_string, app.end_butt_string.get()))
-        elif app.main_string != [] and app.main_string[0] == '':
+            kompas_api.set_property(PROPERTY_NAME, serialization.serialize_part_data(result_data))
+
+        else:
+            # Пользователь нажал "Чертежная деталь"
             kompas_api.set_property('Форматы листов документа', '')
             kompas_api.set_property('Примечание', '')
             part_name = to_drawing(kompas_api.get_property_value('Наименование'))
             kompas_api.set_property('Наименование', part_name)
-
-
