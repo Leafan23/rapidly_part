@@ -1,8 +1,25 @@
+from models import Dimension, Deviation
 
-def format_number(value: float, max_decimals: int = 3) -> str:
-    """100.5 -> '100,5'; 100.0 -> '100'."""
-    s = str(round(value, max_decimals)).replace(".", ",")
-    if s.endswith(",0"):
-        s = s[:-2]
-    return s
 
+def format_deviation_pair(upper: Deviation | None = None, lower: Deviation | None = None) -> str:
+    """Форматирует допуски. Если они симметричны, возвращает '±0,02', иначе '$m+0,1;-0,05$'."""
+    if upper is not None and upper.value == 0: upper = None
+    if lower is not None and lower.value == 0: lower = None
+
+    if not upper and not lower:
+        return ""
+
+    if not upper or not lower:
+        if not lower:
+            return f"$m{str(upper)};$"
+        else:
+            return f"$m;{str(lower)}$"
+
+    if upper.value == lower.value and upper.sign != lower.sign and upper.value != 0:
+        return f"\u00B1{str(upper.value).replace('.',',')}"
+    return f"$m{str(upper)};{str(lower)}$"
+
+
+if __name__ == '__main__':
+    x, y = Deviation(-0.1), Deviation(0.1)
+    print(format_deviation_pair(x, y))
