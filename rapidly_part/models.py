@@ -41,6 +41,13 @@ class Dimension:
     upper_dev: Deviation | None = None
     lower_dev: Deviation | None = None
 
+    @property
+    def value_str(self) -> str:
+        """Возвращает значение с запятой (например, '100,5'), либо пустую строку."""
+        if self.value is None:
+            return ""
+        return format_number(self.value)
+
 
 @dataclass
 class PartData:
